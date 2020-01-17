@@ -24,7 +24,6 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -53,3 +52,81 @@ const followersArray = [];
   luishrd
   bigknell
 */
+
+
+function cardCreator(obj) {
+  // create elements
+  const card = document.createElement("div"),
+    cardImg = document.createElement("img"),
+    cardInfo = document.createElement("div"),
+    cardName = document.createElement("h3"),
+    cardUserName = document.createElement("p"),
+    cardLocation = document.createElement("p"),
+    cardProfile = document.createElement("p"),
+    cardProfileLink = document.createElement("a"),
+    cardFollowers = document.createElement("p"),
+    cardFollowing = document.createElement("p"),
+    cardBio = document.createElement("p");
+
+  // nest elements
+  card.append(cardImg);
+  card.append(cardInfo);
+  cardInfo.append(cardName);
+  cardInfo.append(cardUserName);
+  cardInfo.append(cardLocation);
+  cardInfo.append(cardProfile);
+  cardInfo.append(cardFollowers);
+  cardInfo.append(cardFollowing);
+  cardInfo.append(cardBio);
+  cardProfile.append(cardProfileLink);
+
+  // add classes to elements
+  card.classList.add("card");
+  cardInfo.classList.add("card-info");
+  cardName.classList.add("name");
+  cardUserName.classList.add("username");
+
+  // pass userd data to card
+  cardImg.src = obj.avatar_url;
+  cardName.textContent = obj.name;
+  cardUserName.textContent = obj.login;
+  cardLocation.textContent = `Location: ${obj.location}`;
+  cardProfile.textContent = "Profile:";
+  cardProfileLink.src = obj.html_url;
+  cardProfileLink.textContent = obj.html_url;
+  cardFollowers.textContent = `Followers: ${obj.followers}`;
+  cardFollowing.textContent = `Following: ${obj.following}`;
+  cardBio.textContent = `Bio: ${obj.bio}`;
+
+  // return DOM element
+  return card;
+}
+
+// select .card element
+const cards = document.querySelector(".cards");
+
+// create new card with my data
+axios
+  .get("https://api.github.com/users/RichVI")
+  .then(response => {
+    // console.log(response);
+    cards.append(cardCreator(response.data));
+  })
+  .catch(error => {
+    console.log(error);
+  });
+
+// Followers
+
+const followersArray = ['abarne', 'tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
+
+followersArray.forEach(user => {
+  axios
+  .get('https://api.github.com/users/' + user)
+  .then( response => {
+      cards.append(cardCreator(response.data))
+  })
+  .catch( err => {
+    console.log('Nothing to display.', err);
+  })
+})
